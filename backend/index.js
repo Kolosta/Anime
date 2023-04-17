@@ -115,6 +115,21 @@ app.post("/version", (req, res) => {
     })
 });
 
+app.put("/version/:id", (req, res)=>{
+    const versionId = req.params.id;
+    const q = "UPDATE version SET `content` = ?,`date` = ? WHERE id = ?";
+
+    const values =[
+        req.body.content,
+        req.body.date,
+    ]
+
+    db.query(q, [...values, versionId], (err, data)=>{
+        if(err) return res.json(err);
+        return res.json("La version a été modifiée avec succès");
+    });
+});
+
 app.delete("/version/:id", (req, res)=>{
     const versionId = req.params.id;
     const q = "DELETE FROM version WHERE id = ?";

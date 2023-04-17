@@ -4,6 +4,7 @@ import UpdateCitation from "./pages/UpdateCitation";
 import AddCitation from "./pages/AddCitation";
 import QuillEditor from "./pages/QuillEditor";
 import ListeVersions from "./pages/ListeVersions";
+import UpdateVersion from "./pages/UpdateVersion";
 
 function App() {
   return (
@@ -13,7 +14,8 @@ function App() {
           <Route path="/" element={<Citation/>}/>
           <Route path="/add_citation" element={<AddCitation/>}/>
           <Route path="/update_citation/:id" element={<UpdateCitation/>}/>
-          <Route path="/editor/:id" element={<QuillEditor/>}/>
+          <Route path="/add_version" element={<QuillEditor/>}/>
+          <Route path="/editor/:id" element={<UpdateVersion/>}/>
           <Route path="/liste_versions" element={<ListeVersions/>}/>
         </Routes>
       </BrowserRouter>
