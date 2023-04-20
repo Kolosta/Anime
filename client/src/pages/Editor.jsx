@@ -9,14 +9,17 @@ import hljs from 'highlight.js'
 import 'react-quill/dist/quill.core.css'
 import 'react-quill/dist/quill.bubble.css'
 // import 'highlight.js/styles/mononokai.css'
-// import '../../node_modules/highlight.js/styles/mononokai.css'
+// import '../../node_modules/highlight.js/styles/mononokai.css'8
   
 
-const ListeVersions = () => {
-  const [version, setVersion] = useState([]);
+const Editor = (props) => {
+  const [version, setVersion] = useState({
+    content: props.content,
+    date: props.date,
+  });
 
   const [readOnly, setReadOnly] = useState({
-    readOnlyStatus: true,
+    readOnlyStatus: props.readOnly,
     icon: <FontAwesomeIcon icon={faEyeSlash} />,
   });
 
@@ -69,29 +72,8 @@ const ListeVersions = () => {
     "align",
     "code-block",
   ];
-  
-  
 
-  useEffect(() => {
-    const fetchAllVersions = async () => {
-      try {
-        const res = await axios.get("http://localhost:8800/versions");
-        setVersion(res.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchAllVersions();
-  }, []);
 
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete("http://localhost:8800/version/" + id);
-      window.location.reload();
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   const handleReadOnly = () => {
     if (readOnly.readOnlyStatus) {
@@ -107,9 +89,10 @@ const ListeVersions = () => {
     }
   };
 
-  const Editor = ({ value, modules, formats, readOnly, history }) => (
+  const Editor = ({ value, theme, modules, formats, readOnly, history }) => (
     <ReactQuill
       value={value}
+      theme={theme}
       modules={modules}
       formats={formats}
       readOnly={readOnly}
@@ -117,50 +100,43 @@ const ListeVersions = () => {
     />
   );
 
+    const handleChangeEditor=(e)=>{
+        setVersion({content: e, date: version.date});
+        console.log("Value : " + e)
+        console.log("Version : " + version.content)
+    };
+
+  
+
   return (
     <div>
-      <h1>Versions</h1>
       <div>
-        {version.map((version) => (
-          <div className="version" key={version.id}>
-            {/* <p>{version.content}</p> */}
-            {/* <ReactQuill theme="snow" readOnly value={version.content}/> */}
 
-            <button onClick={handleReadOnly}>{readOnly.icon}</button>
+            {props.isNew ? null : <button onClick={handleReadOnly} >{readOnly.icon}</button>}
+            {/* <button onClick={handleReadOnly} >{readOnly.icon}</button> */}
             {console.log(readOnly.readOnlyStatus)}
-            {/* <ReactQuill
-              value={version.content}
-              modules={readOnly.readOnlyStatus ? modules : modulesFalse}
-              formats={formats}
-              readOnly={readOnly.readOnlyStatus}
-              history={true}
-            /> */}
+
             <Editor
-                // key={readOnly.readOnlyStatus ? "readonly" : "edit"}
                 value={version.content}
-                theme="bubble"
+                theme="snow"
                 modules={readOnly.readOnlyStatus ? modulesFalse : modules}
                 formats={formats}
                 readOnly={readOnly.readOnlyStatus}
                 history={true}
+                onChange={handleChangeEditor}
             />
 
-            <p>{new Date(version.date).toLocaleDateString("fr-FR")}</p>
-            <button className="delete" onClick={() => handleDelete(version.id)}>
-              Supprimer
-            </button>
-            <button className="update">
+            {/* <p>{new Date(version.date).toLocaleDateString("fr-FR")}</p> */}
+            {/* <button className="update">
               {" "}
               <Link to={`/editor/${version.id}`}>Modifier</Link>{" "}
-            </button>
-          </div>
-        ))}
+            </button> */}
       </div>
-      <button>
+      {/* <button>
         <Link to="/add_version">Ajouter une version</Link>
-      </button>
+      </button> */}
     </div>
   );
 };
 
-export default ListeVersions;
+export default Editor;
